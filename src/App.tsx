@@ -1,10 +1,7 @@
-import LoginPage from "./LoginPage/LoginPage"
+import AppRoutes from "./Routes";
 
 function App() {
-
-  return (
-      <LoginPage/>
-  )
+  return <AppRoutes />;
 }
 
-export default App
+export default App;
