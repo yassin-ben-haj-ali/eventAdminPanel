@@ -1,7 +1,7 @@
 import LoginLayout from "./LoginLayout";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, type LoginSchemaType } from "./types";
+import { loginSchema } from "./types";
 import CustomInput from "@/components/ui/CustomInput";
 import { Button } from "@/components/ui/button";
 const LoginPage = () => {
@@ -12,9 +12,7 @@ const LoginPage = () => {
 
 	const { errors } = formState;
 
-	const onSubmit = (data: LoginSchemaType) => {
-		console.log(data);
-	};
+	const onSubmit = () => {};
 
 	return (
 		<LoginLayout>
