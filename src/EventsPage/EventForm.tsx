@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -13,6 +12,8 @@ import type React from "react";
 import { useForm } from "react-hook-form";
 import { EventSchema } from "./types";
 import CustomInput from "@/components/ui/CustomInput";
+import { DateTimePicker } from "@/components/ui/DateTime";
+import { useState } from "react";
 
 type EventFormProps = {
 	id?: string;
@@ -22,9 +23,23 @@ const EventForm: React.FC<EventFormProps> = ({ editMode }) => {
 	const form = useForm({
 		resolver: zodResolver(EventSchema),
 	});
+	const [date, setDate] = useState<Date | undefined>(undefined);
+    const [time, setTime] = useState<string>("");
+
 	const { handleSubmit, register } = form;
 
-	const onSubmit = () => {};
+    const checkDate = (date:Date | undefined, time:string)=>{
+        if(!date || !time) return;
+        const [hours, minutes, seconds] = time.split(":").map(Number);
+        const dateTime = new Date(date);
+        dateTime.setHours(hours,minutes,seconds || 0 );
+        const today = new Date();
+        if(today < dateTime ) return;
+    }
+
+	const onSubmit = () => {
+        checkDate(date,time)
+    };
 
 	return (
 		<Dialog>
@@ -34,7 +49,7 @@ const EventForm: React.FC<EventFormProps> = ({ editMode }) => {
 			<DialogContent>
 				<DialogHeader className="space-y-6">
 					<DialogTitle>Ajouter un événement</DialogTitle>
-					<DialogDescription>
+				</DialogHeader>
 						<form className="space-y-6" onSubmit={(e) => handleSubmit(onSubmit)(e)}>
 							<CustomInput
 								label="title"
@@ -42,24 +57,25 @@ const EventForm: React.FC<EventFormProps> = ({ editMode }) => {
 								required={true}
 								{...register("title")}
 							/>
-							<CustomInput
-								label="title"
-								placeholder="entrer le titre d'événement"
-								{...register("title")}
-							/>
+							<div className="w-full">
+								<DateTimePicker 
+                                date={date}
+                                setDate={setDate}
+                                time={time}
+                                setTime={setTime}
+                                />
+							</div>
 							<CustomInput
 								label="location"
 								placeholder="entrer l'emplacement d'événement"
 								{...register("location")}
 								required={true}
 							/>
-						</form>
-					</DialogDescription>
-				</DialogHeader>
-				<DialogFooter className="flex items-center">
+                            <DialogFooter className="flex items-center">
 					<Button variant={"outline"}>Annuler</Button>
 					<Button type="submit">Valider</Button>
 				</DialogFooter>
+						</form>
 			</DialogContent>
 		</Dialog>
 	);
