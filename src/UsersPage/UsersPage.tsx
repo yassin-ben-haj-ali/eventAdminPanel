@@ -1,5 +1,24 @@
+import CustomInput from "@/components/ui/CustomInput";
+import UsersLayout from "./UsersPageLayout";
+import { useState } from "react";
+import UserForm from "./UserForm";
+
 const UsersPage = () => {
-	return <div>UsersPage</div>;
+	const [search, setSearch] = useState("");
+	return (
+		<UsersLayout>
+			<div className="flex flex-col space-y-10">
+				<div className="flex items-center justify-end gap-4">
+					<CustomInput
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+						placeholder="Rechercher un événement"
+					/>
+					<UserForm editMode={false} />
+				</div>
+			</div>
+		</UsersLayout>
+	);
 };
 
 export default UsersPage;

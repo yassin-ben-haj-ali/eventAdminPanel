@@ -7,14 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-type DateTimePickerProps={
-  date: Date | undefined;
-  setDate: (date: Date | undefined) => void;
-  time: string;
-  setTime: (time: string) => void;
-}
+type DateTimePickerProps = {
+	date: Date | undefined;
+	setDate: (date: Date | undefined) => void;
+	time: string;
+	setTime: (time: string) => void;
+};
 
-export function DateTimePicker({date,setDate,time,setTime}:DateTimePickerProps) {
+export function DateTimePicker({ date, setDate, time, setTime }: DateTimePickerProps) {
 	const [open, setOpen] = React.useState(false);
 
 	return (
@@ -56,8 +56,8 @@ export function DateTimePicker({date,setDate,time,setTime}:DateTimePickerProps) 
 					id="time-picker"
 					step="1"
 					defaultValue="10:30:00"
-                     value={time}
-          onChange={(e) => setTime(e.target.value)} 
+					value={time}
+					onChange={(e) => setTime(e.target.value)}
 					className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
 				/>
 			</div>
