@@ -1,6 +1,6 @@
 import * as React from "react";
-
 import { cn } from "@/lib/utils";
+import type { FilterType } from "@/UsersPage/store/types";
 
 function Table({ className, ...props }: React.ComponentProps<"table">) {
 	return (
@@ -51,7 +51,18 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
 	);
 }
 
-function TableHead({ className, ...props }: React.ComponentProps<"th">) {
+type TableHeadProps = {
+	optionName: string;
+	hideArrow?: boolean;
+	filterType: FilterType;
+	headerHeight?: string;
+	filterParams?: {
+		hideOrder?: boolean;
+		hideSearch?: boolean;
+	};
+};
+
+function TableHead({ className, ...props }: React.ComponentProps<"th"> & TableHeadProps) {
 	return (
 		<th
 			data-slot="table-head"
