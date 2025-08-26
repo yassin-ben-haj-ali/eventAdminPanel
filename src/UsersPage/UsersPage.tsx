@@ -12,7 +12,7 @@ const UsersPage = () => {
 					<CustomInput
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
-						placeholder="Rechercher un événement"
+						placeholder="Rechercher un organisateur"
 					/>
 					<UserForm editMode={false} />
 				</div>
