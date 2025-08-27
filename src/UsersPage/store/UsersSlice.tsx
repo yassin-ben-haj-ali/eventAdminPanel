@@ -6,6 +6,7 @@ const initialState = {
 	tableFilters: {
 		user: [],
 	},
+	searchFilter: "",
 };
 
 export const usersSlice: StateCreator<UsersSlice> = (set) => ({
@@ -26,6 +27,13 @@ export const usersSlice: StateCreator<UsersSlice> = (set) => ({
 						...state.user.tableFilters,
 						[table]: filters,
 					},
+				},
+			})),
+		setSearchFilter: (searchFilter: string) =>
+			set((state) => ({
+				user: {
+					...state.user,
+					searchFilter,
 				},
 			})),
 	},

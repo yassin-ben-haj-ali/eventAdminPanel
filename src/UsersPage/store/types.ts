@@ -26,5 +26,7 @@ export type UsersSlice = {
 		setUsers: (users: User[]) => void;
 		tableFilters: TableFilters;
 		setTableFilters: (table: keyof TableFilters, filters: TableFilter[]) => void;
+		searchFilter: string;
+		setSearchFilter: (keyword: string) => void;
 	};
 };
