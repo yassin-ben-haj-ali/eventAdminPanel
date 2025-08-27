@@ -41,7 +41,7 @@ const ColumnOptions = memo((props: ColumnOptionsProps) => {
 		setKeyword("");
 	}, [clearSearch, setKeyword]);
 
-	const showSearchBar = false;
+	const showSearchBar = initialOptions.length === 0;
 
 	return (
 		<div className="space-y-3" onKeyDown={onKeyDown}>

@@ -1,7 +1,16 @@
 import CustomTable from "@/components/ui/CustomTable";
 import { TableCell, TableRow } from "@/components/ui/table";
+import ViewUserInfo from "./ViewUserInfo";
 
 const headers = [
+	{
+		optionName: "see",
+		headerTitle: "Aperçus",
+		filterParams: {
+			hideOrder: true,
+			hideSearch: true,
+		},
+	},
 	{
 		optionName: "firstName",
 		headerTitle: "nom",
@@ -61,6 +70,9 @@ const UsersTable = () => {
 	const usersRows = users.map((user) => {
 		return (
 			<TableRow key={user?.id}>
+				<TableCell className="text-center font-medium">
+					<ViewUserInfo data={user} />
+				</TableCell>
 				<TableCell className="text-center font-medium">{user.firstName}</TableCell>
 				<TableCell className="text-center font-medium">{user.lastName}</TableCell>
 				<TableCell className="text-center font-medium">{user.email}</TableCell>

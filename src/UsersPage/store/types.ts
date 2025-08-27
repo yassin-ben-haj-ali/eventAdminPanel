@@ -1,8 +1,9 @@
-type User = {
+export type User = {
 	firstName: string;
 	lastName: string;
 	email: string;
 	id: string;
+	role: string;
 };
 
 export type FilterType = "user";
