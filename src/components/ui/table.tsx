@@ -1,6 +1,10 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import type { FilterType } from "@/UsersPage/store/types";
+import { useStore } from "@/store/store";
+import { FILTER_OPTIONS } from "@/lib/constants";
+import CloseFilter from "@/assets/CloseFilter";
+import ColumnFilter from "./ColumnFilter/ColumnFilter";
 
 function Table({ className, ...props }: React.ComponentProps<"table">) {
 	return (
@@ -61,17 +65,95 @@ type TableHeadProps = {
 		hideSearch?: boolean;
 	};
 };
+type OptionConfig = typeof FILTER_OPTIONS;
 
-function TableHead({ className, ...props }: React.ComponentProps<"th"> & TableHeadProps) {
+function TableHead({
+	className,
+	filterType,
+	ref,
+	children,
+	hideArrow,
+	filterParams,
+	optionName,
+	...props
+}: React.ComponentProps<"th"> & TableHeadProps) {
+	const filters = useStore((state) => state.user.tableFilters)[filterType] || [];
+	const setFilters = useStore((state) => state.user.setTableFilters);
+
+	const handleClearFilter = (optionName: string, filterValue: string) => {
+		if (typeof setFilters === "function") {
+			const updatedFilters = filters.filter(
+				(filter) => !(filter.optionName === optionName && filter.filterValue === filterValue)
+			);
+			setFilters(filterType, updatedFilters);
+		}
+	};
+	const getFilterName = (optionName: string, filterValue: string): string | undefined => {
+		for (const optionGroupKey in FILTER_OPTIONS) {
+			const optionGroup = FILTER_OPTIONS[optionGroupKey as keyof OptionConfig];
+			if (optionGroup && optionGroup[optionName]) {
+				const filtersArray = optionGroup[optionName as keyof typeof optionGroup];
+				if (Array.isArray(filtersArray)) {
+					const matchedFilter = filtersArray.find((filter) => filter.value === filterValue);
+					if (matchedFilter) {
+						return matchedFilter.name;
+					}
+				}
+			}
+		}
+		return undefined; // Return undefined if no match is found
+	};
+
+	const getValueOfOrderFilter = (filterValue: string) => {
+		return filterValue === "desc" ? "Ordre décroissant" : "Ordre croissant";
+	};
 	return (
 		<th
-			data-slot="table-head"
-			className={cn(
-				"text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-				className
-			)}
+			ref={ref}
+			className={`relative h-20 cursor-pointer px-4 text-left align-middle font-medium whitespace-nowrap text-neutral-500 lg:h-28 dark:text-neutral-400 [&:has([role=checkbox])]:pr-0`}
 			{...props}
-		/>
+		>
+			<div className={cn("flex items-center gap-3", className)}>
+				{children}
+				{!hideArrow && (
+					<div className="flex items-center justify-center">
+						<ColumnFilter
+							filterType={filterType}
+							filterParams={filterParams}
+							optionName={optionName}
+						/>
+						{filters.length &&
+							filters.map((currentFilter, index) => {
+								return (
+									<div
+										key={currentFilter.filterKey}
+										style={{
+											transform: "translateX(-50%)",
+										}}
+										className={`absolute left-[50%] ${index === 0 ? "top-[60%]" : "top-[80%]"} flex items-center justify-between rounded-[6px] bg-[#F0F0F0] px-1`}
+									>
+										<span className="min-w-[70px] flex-1 text-center text-[#4D2EB2] lg:min-w-[90px]">
+											{currentFilter.filterKey === "radio"
+												? getFilterName(currentFilter.optionName, currentFilter.filterValue)
+												: currentFilter.filterKey === "order"
+													? getValueOfOrderFilter(currentFilter.filterValue)
+													: currentFilter.filterValue}
+										</span>
+										<button
+											className="ml-3 flex h-4 w-4 items-center justify-center rounded-full bg-[#4D2EB2]"
+											onClick={() =>
+												handleClearFilter(currentFilter.optionName, currentFilter.filterValue)
+											}
+										>
+											<CloseFilter />
+										</button>
+									</div>
+								);
+							})}
+					</div>
+				)}
+			</div>
+		</th>
 	);
 }
 
