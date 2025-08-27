@@ -2,6 +2,7 @@ import CustomInput from "@/components/ui/CustomInput";
 import UsersLayout from "./UsersPageLayout";
 import { useState } from "react";
 import UserForm from "./UserForm";
+import UsersTable from "./UsersTable";
 
 const UsersPage = () => {
 	const [search, setSearch] = useState("");
@@ -15,6 +16,9 @@ const UsersPage = () => {
 						placeholder="Rechercher un organisateur"
 					/>
 					<UserForm editMode={false} />
+				</div>
+				<div>
+					<UsersTable />
 				</div>
 			</div>
 		</UsersLayout>

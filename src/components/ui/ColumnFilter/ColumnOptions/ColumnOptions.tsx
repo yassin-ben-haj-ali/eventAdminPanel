@@ -3,7 +3,7 @@ import type { FilterType } from "@/UsersPage/store/types";
 import { useFilterOptions } from "./hooks/useFilterOptions";
 import SearchInput from "./SearchInput";
 import OptionsList from "./OptionList";
-import type { FilterOption } from "./types";
+import useInitialOptions from "./hooks/useInitialOptions";
 
 type ColumnOptionsProps = {
 	optionName: string;
@@ -16,8 +16,16 @@ type ColumnOptionsProps = {
 };
 
 const ColumnOptions = memo((props: ColumnOptionsProps) => {
-	const { selectedRadio, onSelectRadio, setKeyword, defaultKeyword, onKeyDown } = props;
-	const initialOptions: FilterOption[] = [];
+	const {
+		selectedRadio,
+		onSelectRadio,
+		setKeyword,
+		defaultKeyword,
+		onKeyDown,
+		filterType,
+		optionName,
+	} = props;
+	const { initialOptions } = useInitialOptions(filterType, optionName);
 	const { filteredOptions, handleSearch, clearSearch } = useFilterOptions(initialOptions);
 
 	const handleKeywordChange = useCallback(
@@ -33,7 +41,7 @@ const ColumnOptions = memo((props: ColumnOptionsProps) => {
 		setKeyword("");
 	}, [clearSearch, setKeyword]);
 
-	const showSearchBar = true;
+	const showSearchBar = false;
 
 	return (
 		<div className="space-y-3" onKeyDown={onKeyDown}>

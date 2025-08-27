@@ -110,7 +110,7 @@ function TableHead({
 	return (
 		<th
 			ref={ref}
-			className={`relative h-20 cursor-pointer px-4 text-left align-middle font-medium whitespace-nowrap text-neutral-500 lg:h-28 dark:text-neutral-400 [&:has([role=checkbox])]:pr-0`}
+			className={`relative h-20 cursor-pointer px-4 text-left align-middle font-medium whitespace-nowrap text-neutral-500 [&:has([role=checkbox])]:pr-0`}
 			{...props}
 		>
 			<div className={cn("flex items-center gap-3", className)}>
@@ -122,34 +122,36 @@ function TableHead({
 							filterParams={filterParams}
 							optionName={optionName}
 						/>
-						{filters.length &&
-							filters.map((currentFilter, index) => {
-								return (
-									<div
-										key={currentFilter.filterKey}
-										style={{
-											transform: "translateX(-50%)",
-										}}
-										className={`absolute left-[50%] ${index === 0 ? "top-[60%]" : "top-[80%]"} flex items-center justify-between rounded-[6px] bg-[#F0F0F0] px-1`}
-									>
-										<span className="min-w-[70px] flex-1 text-center text-[#4D2EB2] lg:min-w-[90px]">
-											{currentFilter.filterKey === "radio"
-												? getFilterName(currentFilter.optionName, currentFilter.filterValue)
-												: currentFilter.filterKey === "order"
-													? getValueOfOrderFilter(currentFilter.filterValue)
-													: currentFilter.filterValue}
-										</span>
-										<button
-											className="ml-3 flex h-4 w-4 items-center justify-center rounded-full bg-[#4D2EB2]"
-											onClick={() =>
-												handleClearFilter(currentFilter.optionName, currentFilter.filterValue)
-											}
+						{filters.length > 0 &&
+							filters
+								.filter((filter) => filter.optionName === optionName)
+								.map((currentFilter, index) => {
+									return (
+										<div
+											key={currentFilter.filterKey}
+											style={{
+												transform: "translateX(-50%)",
+											}}
+											className={`absolute left-[50%] ${index === 0 ? "top-[60%]" : "top-[80%]"} flex items-center justify-between rounded-[6px] bg-[#F0F0F0] px-1`}
 										>
-											<CloseFilter />
-										</button>
-									</div>
-								);
-							})}
+											<span className="min-w-[70px] flex-1 text-center text-[#3b56b6] lg:min-w-[90px]">
+												{currentFilter.filterKey === "radio"
+													? getFilterName(currentFilter.optionName, currentFilter.filterValue)
+													: currentFilter.filterKey === "order"
+														? getValueOfOrderFilter(currentFilter.filterValue)
+														: currentFilter.filterValue}
+											</span>
+											<button
+												className="flex h-4 w-4 items-center justify-center rounded-full bg-[#3b56b6]"
+												onClick={() =>
+													handleClearFilter(currentFilter.optionName, currentFilter.filterValue)
+												}
+											>
+												<CloseFilter />
+											</button>
+										</div>
+									);
+								})}
 					</div>
 				)}
 			</div>
