@@ -67,7 +67,7 @@ const UsersTable = () => {
 				<TableCell className="text-center font-medium">{user.firstName}</TableCell>
 				<TableCell className="text-center font-medium">{user.lastName}</TableCell>
 				<TableCell className="text-center font-medium">{user.email}</TableCell>
-				<TableCell className="text-center font-medium">{user.role}</TableCell>
+				<TableCell className="text-center font-medium">{user.role==="USER" ? "Employée" : "Organisateur"  }</TableCell>
 			</TableRow>
 		);
 	});

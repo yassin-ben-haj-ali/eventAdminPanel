@@ -3,8 +3,8 @@ import type { OptionConfig } from "@/components/ui/ColumnFilter/ColumnOptions/ty
 export const FILTER_OPTIONS: OptionConfig = {
 	user: {
 		role: [
-			{ id: 0, name: "Organisateur", value: "organisateur" },
-			{ id: 1, name: "Employée", value: "employée" },
+			{ id: 0, name: "Organisateur", value: "ADMIN" },
+			{ id: 1, name: "Employée", value: "USER" },
 		],
 	},
 };

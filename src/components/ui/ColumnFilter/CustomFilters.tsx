@@ -12,7 +12,7 @@ export const customFilters: Record<
 		filters: {
 			name: (value) =>
 				`where[OR][0][firstName][contains]=${value}&where[OR][0][firstName][mode]=insensitive&where[OR][1][lastName][contains]=${value}&where[OR][1][lastName][mode]=insensitive`,
-			userRole: (value) => `where[role][equals]=${encodeURIComponent(value)}`,
+			role: (value) => `where[role][equals]=${encodeURIComponent(value)}`,
 		},
 	},
 };
