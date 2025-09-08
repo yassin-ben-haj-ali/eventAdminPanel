@@ -1,9 +1,10 @@
 import LoginLayout from "./LoginLayout";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "./types";
+import { loginSchema, type LoginSchemaType } from "./types";
 import CustomInput from "@/components/ui/CustomInput";
 import { Button } from "@/components/ui/button";
+import useLogin from "./hooks/useLogin";
 const LoginPage = () => {
 	const form = useForm({
 		resolver: zodResolver(loginSchema),
@@ -12,7 +13,11 @@ const LoginPage = () => {
 
 	const { errors } = formState;
 
-	const onSubmit = () => {};
+	const loginQuery = useLogin();
+
+	const onSubmit = async (values: LoginSchemaType) => {
+		loginQuery.mutate(values);
+	};
 
 	return (
 		<LoginLayout>

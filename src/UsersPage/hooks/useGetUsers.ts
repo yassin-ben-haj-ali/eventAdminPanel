@@ -3,7 +3,8 @@ import { useStore } from "@/store/store";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import type { User } from "../store/types";
-import axios from "@/api/axios";
+import type { AxiosInstance } from "axios";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 export type UsersResponse = {
 	paginatedResult: User[];
@@ -14,7 +15,8 @@ const take = 10;
 const getUsers = async (
 	pageParam: number,
 	filters: TableFilter[],
-	searchFilter: string
+	searchFilter: string,
+	axiosPrivate: AxiosInstance
 ): Promise<UsersResponse> => {
 	const where = filters
 		.filter((filter) => {
@@ -50,7 +52,7 @@ const getUsers = async (
 			`&where[OR][1][lastName][contains]=${encodeURIComponent(searchFilter)}&where[OR][1][lastName][mode]=insensitive` +
 			`&where[OR][2][mailAdress][contains]=${encodeURIComponent(searchFilter)}&where[OR][2][mailAdress][mode]=insensitive`
 		: "";
-	const response = await axios.get(
+	const response = await axiosPrivate.get(
 		`/user?skip=${pageParam * take}&take=${take}&${where}&${orderBy}${searchQuery}`
 	);
 	return response.data;
@@ -60,10 +62,11 @@ const useGetUsers = (options?: { filters?: TableFilter[]; enabled: boolean }) =>
 	const mergedFilters = [...(filters || []), ...(options?.filters || [])];
 	const setUsers = useStore((state) => state.user.setUsers);
 	const searchFilter = useStore((state) => state.user.searchFilter);
+	const axiosPrivate = useAxiosPrivate();
 	const usersQuery = useInfiniteQuery({
-		queryKey: ["users", mergedFilters, searchFilter], // Include siteId in the query key
+		queryKey: ["users", mergedFilters, searchFilter, axiosPrivate],
 		queryFn: ({ pageParam = 0 }) => {
-			return getUsers(pageParam, mergedFilters, searchFilter);
+			return getUsers(pageParam, mergedFilters, searchFilter, axiosPrivate);
 		},
 		enabled: options?.enabled,
 		initialPageParam: 0,
