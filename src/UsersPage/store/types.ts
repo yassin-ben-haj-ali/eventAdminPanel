@@ -6,7 +6,7 @@ export type User = {
 	role: string;
 };
 
-export type FilterType = "user";
+export type FilterType = "user" | "event";
 
 export type TableFilter = {
 	optionName: string;
@@ -18,6 +18,7 @@ export type TableFilter = {
 
 export type TableFilters = {
 	user: TableFilter[];
+	event: TableFilter[];
 };
 
 export type UsersSlice = {

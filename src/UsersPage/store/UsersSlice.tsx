@@ -5,6 +5,7 @@ const initialState = {
 	users: [],
 	tableFilters: {
 		user: [],
+		event: [],
 	},
 	searchFilter: "",
 };
