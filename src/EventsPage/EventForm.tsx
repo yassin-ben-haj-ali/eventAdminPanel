@@ -17,13 +17,14 @@ import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import useCreateEvent from "./hooks/useCreateEvent";
-import type { Event } from "./store/types";
+import type { EventToUpdate } from "./store/types";
 import Loader from "@/components/ui/Loader/Loader";
+import EditIcon from "@/assets/EditIcon";
+import useEditEvent from "./hooks/useEditEvent";
 
 type EventFormProps = {
-	id?: string;
 	editMode: boolean;
-	eventData: Event;
+	eventData?: EventToUpdate;
 };
 const EventForm: React.FC<EventFormProps> = ({ editMode, eventData }) => {
 	const [isOpen, setIsOpen] = useState(false);
@@ -35,6 +36,7 @@ const EventForm: React.FC<EventFormProps> = ({ editMode, eventData }) => {
 	const [dateError, setDateError] = useState<string>("");
 	const { handleSubmit, register, reset } = form;
 	const { isLoading, handleCreateEvent } = useCreateEvent();
+	const { isLoading: isEditLoading, handleEditEvent } = useEditEvent();
 	useEffect(() => {
 		if (eventData) {
 			reset({
@@ -86,14 +88,30 @@ const EventForm: React.FC<EventFormProps> = ({ editMode, eventData }) => {
 			dateTime = new Date(date);
 			dateTime.setHours(hours, minutes, 0, 0);
 		}
-		if (dateTime) await handleCreateEvent({ ...data, date: dateTime });
+		if (dateTime) {
+			if (editMode && eventData) {
+				await handleEditEvent(eventData.id, { ...data, date: dateTime, id: eventData.id });
+			} else {
+				await handleCreateEvent({ ...data, date: dateTime });
+			}
+		}
 		setIsOpen(false);
 	};
+
+	const loading = editMode ? isLoading : isEditLoading;
 
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger>
-				{editMode ? <Button>Edit Event</Button> : <Button>Add event</Button>}
+				{editMode ? (
+					<button type="button" className="cursor-pointer border p-1 focus:outline-none">
+						<EditIcon />
+					</button>
+				) : (
+					<Button type="button" className="px-[47px]" onClick={() => setIsOpen(true)}>
+						Add event
+					</Button>
+				)}
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader className="space-y-6">
@@ -142,7 +160,7 @@ const EventForm: React.FC<EventFormProps> = ({ editMode, eventData }) => {
 							Annuler
 						</Button>
 						<Button type="submit">
-							{isLoading ? (
+							{loading ? (
 								<span className="flex items-center justify-center pb-4">
 									<Loader fillColor="white" width="25px" />
 								</span>

@@ -7,6 +7,15 @@ export type Event = {
 	status: string;
 };
 
+export type EventToUpdate = {
+	id: string;
+	name: string;
+	description: string;
+	date: Date;
+	location: string;
+	status?: string;
+};
+
 export type EventsSlice = {
 	event: {
 		events: Event[];
