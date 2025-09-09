@@ -1,6 +1,7 @@
 import z from "zod";
 export const EventSchema = z.object({
-	title: z.string().min(1, "title is required"),
+	name: z.string().min(1, "name is required"),
+	description: z.string().min(1, "description is required"),
 	location: z.string().min(1, "title is required"),
 });
 

@@ -19,21 +19,23 @@ const EventsList = () => {
 		}
 	}, [inView, getEventsQuery.hasNextPage, getEventsQuery.fetchNextPage]);
 	return (
-		<div className="flex gap-4">
-			{events.map((event) => (
-				<div key={event.id} className="w-1/3">
-					<EventCard
-						title={event.name}
-						date={event.date}
-						description={event.description}
-						location="Leoni Tunisie"
-					/>
+		<div className="max-h-[calc(100vh-20rem)] overflow-auto">
+			<div className="grid grid-cols-3 gap-4">
+				{events.map((event) => (
+					<div key={event.id}>
+						<EventCard
+							title={event.name}
+							date={event.date}
+							description={event.description}
+							location={event.location}
+						/>
+					</div>
+				))}
+				<div ref={ref}>
+					{getEventsQuery.isFetchingNextPage && (
+						<Loader className="flex w-full items-center justify-center" />
+					)}
 				</div>
-			))}
-			<div ref={ref}>
-				{getEventsQuery.isFetchingNextPage && (
-					<Loader className="flex w-full items-center justify-center" />
-				)}
 			</div>
 		</div>
 	);
