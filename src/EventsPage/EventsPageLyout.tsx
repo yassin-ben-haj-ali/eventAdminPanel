@@ -2,6 +2,7 @@ import BackButton from "@/components/ui/BackButton";
 
 type Props = {
 	children: React.ReactNode;
+	description?: string;
 };
 
 const EventsLayout = (props: Props) => {
@@ -12,7 +13,9 @@ const EventsLayout = (props: Props) => {
 					<BackButton text={"Retour"} className="text-primary text-xl" />
 				</div>
 				<div className="w-full space-y-3">
-					<p className="text-text text-justify">{"create event description"}</p>
+					<p className="text-text text-justify">
+						{props.description ?? "create event description"}
+					</p>
 				</div>
 			</div>
 			<div className="h-full">{props.children}</div>

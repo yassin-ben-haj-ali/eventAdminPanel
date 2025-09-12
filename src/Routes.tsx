@@ -6,6 +6,7 @@ import UsersPage from "./UsersPage/UsersPage";
 import EventsPage from "./EventsPage/EventsPage";
 import PersistLogin from "./PersistLogin";
 import RequireAuth from "./RequireAuth";
+import EventsDetailsPage from "./EventDetails/EventsDetailsPage";
 const AppRoutes = () => {
 	return (
 		<Routes>
@@ -19,6 +20,7 @@ const AppRoutes = () => {
 						<Route path="/home" element={<HomePage />} />
 						<Route path="/users" element={<UsersPage />} />
 						<Route path="/events" element={<EventsPage />} />
+						<Route path="/events/:id" element={<EventsDetailsPage />} />
 					</Route>
 				</Route>
 			</Route>

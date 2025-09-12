@@ -14,6 +14,7 @@ export type EventToUpdate = {
 	date: Date;
 	location: string;
 	status?: string;
+	onClick?: () => void;
 };
 
 export type EventsSlice = {

@@ -4,8 +4,10 @@ import useGetEvents from "./hooks/useGetEvents";
 import { useStore } from "@/store/store";
 import { useEffect } from "react";
 import Loader from "@/components/ui/Loader/Loader";
+import { useNavigate } from "react-router-dom";
 
 const EventsList = () => {
+	const navigate = useNavigate();
 	const { ref, inView } = useInView({
 		threshold: 0,
 	});
@@ -25,7 +27,11 @@ const EventsList = () => {
 					const { date, ...rest } = event;
 					return (
 						<div key={event.id}>
-							<EventCard date={new Date(date)} {...rest} />
+							<EventCard
+								onClick={() => navigate(`/events/${event.id}`)}
+								date={new Date(date)}
+								{...rest}
+							/>
 						</div>
 					);
 				})}
