@@ -9,7 +9,7 @@ const EventCard: React.FC<EventToUpdate> = ({ name, date, location, description,
 	const navigate = useNavigate();
 	return (
 		<div className="space-y-3 rounded-lg bg-white p-4 shadow-lg">
-			{/* {image && <img src={image} alt={name} className="h-48 w-full rounded-t-lg object-cover" />} */}
+			<img src="./banner.jpg" alt={name} className="h-48 w-full rounded-t-lg object-cover" />
 			<div className="space-y-2">
 				<div className="flex items-center justify-between">
 					<h2 className="text-xl font-semibold">{name}</h2>
@@ -26,7 +26,7 @@ const EventCard: React.FC<EventToUpdate> = ({ name, date, location, description,
 					</div>
 				</div>
 				<p className="text-gray-600">{date.toISOString()}</p>
-				<p className="max-h-24 overflow-y-auto break-words whitespace-pre-line text-gray-600">
+				<p className="max-h-6 overflow-y-auto break-words whitespace-pre-line text-gray-600">
 					{description}
 				</p>
 				<p className="text-gray-600">{location}</p>
