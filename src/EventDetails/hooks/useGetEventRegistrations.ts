@@ -15,9 +15,10 @@ const take = 10;
 const getEventRegistrations = async (
 	pageParam: number,
 	filters: TableFilter[],
-	axiosPrivate: AxiosInstance
+	axiosPrivate: AxiosInstance,
+	eventId?: string
 ): Promise<EventRegistrationsResponse> => {
-	const where = filters
+	let where = filters
 		.filter((filter) => {
 			// Remove 'keyword' filter if both 'keyword' and 'radio' are present
 			if (
@@ -43,23 +44,29 @@ const getEventRegistrations = async (
 				: `orderBy[${filter.optionName}]=${filter.filterValue}`
 		)
 		.join("&");
+	if (eventId) {
+		where = `where[eventId]=${eventId}` + (where ? `&${where}` : "");
+	}
 	if (!orderBy) {
 		orderBy = "orderBy[createdAt]=asc";
 	}
 	const response = await axiosPrivate.get(
-		`/registrations?skip=${pageParam * take}&take=${take}&${where}&${orderBy}`
+		`/registration?skip=${pageParam * take}&take=${take}&${where}&${orderBy}`
 	);
 	return response.data;
 };
-const useGetEventRegistrations = (options?: { filters?: TableFilter[]; enabled: boolean }) => {
+const useGetEventRegistrations = (
+	eventId?: string,
+	options?: { filters?: TableFilter[]; enabled: boolean }
+) => {
 	const filters = useStore((state) => state.user.tableFilters).registration;
 	const mergedFilters = [...(filters || []), ...(options?.filters || [])];
 	const setRegistrations = useStore((state) => state.registration.setRegistrations);
 	const axiosPrivate = useAxiosPrivate();
 	const registrationsQuery = useInfiniteQuery({
-		queryKey: ["registrations", mergedFilters, axiosPrivate],
+		queryKey: ["registrations", mergedFilters, axiosPrivate, eventId],
 		queryFn: ({ pageParam = 0 }) => {
-			return getEventRegistrations(pageParam, mergedFilters, axiosPrivate);
+			return getEventRegistrations(pageParam, mergedFilters, axiosPrivate, eventId);
 		},
 		enabled: options?.enabled,
 		initialPageParam: 0,

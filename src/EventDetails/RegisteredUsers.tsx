@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import Loader from "@/components/ui/Loader/Loader";
 import { useStore } from "@/store/store";
 import useGetEventRegistrations from "./hooks/useGetEventRegistrations";
+import { useParams } from "react-router-dom";
 const headers = [
 	{
 		optionName: "see",
@@ -37,29 +38,14 @@ const headers = [
 			hideSearch: true,
 		},
 	},
-	{
-		optionName: "role",
-		headerTitle: "Rôle",
-		filterParams: {
-			hideOrder: true,
-		},
-	},
 ];
 const RegisteredUsersTable = () => {
+	const params = useParams();
+	const eventId = params.id;
 	const { ref, inView } = useInView({
 		threshold: 0,
 	});
-	const getRegistrationsQuery = useGetEventRegistrations({
-		enabled: false,
-		filters: [
-			{
-				optionName: "reservation",
-				filterKey: "eventRegistration",
-				filterValue: "test",
-				customFilter: ``,
-			},
-		],
-	});
+	const getRegistrationsQuery = useGetEventRegistrations(eventId, { enabled: !!eventId });
 	const registrations = useStore((state) => state.registration.registrations);
 	useEffect(() => {
 		if (inView && getRegistrationsQuery.hasNextPage) {
@@ -75,9 +61,6 @@ const RegisteredUsersTable = () => {
 				<TableCell className="text-center font-medium">{registration.user.firstName}</TableCell>
 				<TableCell className="text-center font-medium">{registration.user.lastName}</TableCell>
 				<TableCell className="text-center font-medium">{registration.user.email}</TableCell>
-				<TableCell className="text-center font-medium">
-					{registration.user.role === "USER" ? "Employée" : "Organisateur"}
-				</TableCell>
 			</TableRow>
 		);
 	});
