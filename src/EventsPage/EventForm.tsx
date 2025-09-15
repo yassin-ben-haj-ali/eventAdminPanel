@@ -34,7 +34,8 @@ const EventForm: React.FC<EventFormProps> = ({ editMode, eventData }) => {
 	const [date, setDate] = useState<Date | undefined>(undefined);
 	const [time, setTime] = useState<string>("");
 	const [dateError, setDateError] = useState<string>("");
-	const { handleSubmit, register, reset } = form;
+	const { handleSubmit, register, reset, formState } = form;
+	const { errors } = formState;
 	const { isLoading, handleCreateEvent } = useCreateEvent();
 	const { isLoading: isEditLoading, handleEditEvent } = useEditEvent();
 	useEffect(() => {
@@ -127,8 +128,9 @@ const EventForm: React.FC<EventFormProps> = ({ editMode, eventData }) => {
 					<CustomInput
 						label="title"
 						placeholder="entrer le titre d'événement"
-						required={true}
+						// required={true}
 						{...register("name")}
+						error={errors.name?.message}
 					/>
 					<div className="w-full">
 						<DateTimePicker date={date} setDate={setDate} time={time} setTime={setTime} />
@@ -138,7 +140,7 @@ const EventForm: React.FC<EventFormProps> = ({ editMode, eventData }) => {
 						label="location"
 						placeholder="entrer l'emplacement d'événement"
 						{...register("location")}
-						required={true}
+						error={errors.location?.message}
 					/>
 					<div className="grid grid-cols-4 items-center gap-4">
 						<div className="text col-span-4">
@@ -152,6 +154,7 @@ const EventForm: React.FC<EventFormProps> = ({ editMode, eventData }) => {
 								className="min-h-36"
 								placeholder="description"
 								{...register("description")}
+								error={errors.description?.message}
 							/>
 						</div>
 					</div>

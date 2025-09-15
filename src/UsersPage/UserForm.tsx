@@ -10,8 +10,10 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import type React from "react";
 import { useForm } from "react-hook-form";
-import { userSchema } from "./types";
+import { userSchema, type UserSchemaType } from "./types";
 import CustomInput from "@/components/ui/CustomInput";
+import useCreateUser from "./hooks/useCreateUser";
+import { useEffect, useState } from "react";
 
 type UserFormProps = {
 	id?: string;
@@ -21,13 +23,21 @@ const UserForm: React.FC<UserFormProps> = ({ editMode }) => {
 	const form = useForm({
 		resolver: zodResolver(userSchema),
 	});
-	const { handleSubmit, register, formState } = form;
+	const [isOpen, setIsOpen] = useState(false);
+	const { handleSubmit, register, formState, reset } = form;
 	const { errors } = formState;
+	const { handleCreateUser } = useCreateUser();
 
-	const onSubmit = () => {};
+	const onSubmit = async (values: UserSchemaType) => {
+		await handleCreateUser(values);
+		setIsOpen(false);
+	};
+	useEffect(() => {
+		reset();
+	}, [isOpen]);
 
 	return (
-		<Dialog>
+		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger>
 				{editMode ? <Button>Edit User</Button> : <Button>Add User</Button>}
 			</DialogTrigger>

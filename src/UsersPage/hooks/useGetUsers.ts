@@ -50,7 +50,7 @@ const getUsers = async (
 	const searchQuery = searchFilter
 		? `&where[OR][0][firstName][contains]=${encodeURIComponent(searchFilter)}&where[OR][0][firstName][mode]=insensitive` +
 			`&where[OR][1][lastName][contains]=${encodeURIComponent(searchFilter)}&where[OR][1][lastName][mode]=insensitive` +
-			`&where[OR][2][mailAdress][contains]=${encodeURIComponent(searchFilter)}&where[OR][2][mailAdress][mode]=insensitive`
+			`&where[OR][2][email][contains]=${encodeURIComponent(searchFilter)}&where[OR][2][email][mode]=insensitive`
 		: "";
 	const response = await axiosPrivate.get(
 		`/user?skip=${pageParam * take}&take=${take}&${where}&${orderBy}${searchQuery}`
