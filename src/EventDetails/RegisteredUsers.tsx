@@ -7,6 +7,8 @@ import Loader from "@/components/ui/Loader/Loader";
 import { useStore } from "@/store/store";
 import useGetEventRegistrations from "./hooks/useGetEventRegistrations";
 import { useParams } from "react-router-dom";
+import useEditEventRegistration from "./hooks/useEditEventRegistration";
+import ConfirmModal from "@/layouts/ConfirmModal";
 const headers = [
 	{
 		optionName: "see",
@@ -45,6 +47,7 @@ const RegisteredUsersTable = () => {
 	const { ref, inView } = useInView({
 		threshold: 0,
 	});
+	const { handleEditEventRegistration, isLoading } = useEditEventRegistration();
 	const getRegistrationsQuery = useGetEventRegistrations(eventId, { enabled: !!eventId });
 	const registrations = useStore((state) => state.registration.registrations);
 	useEffect(() => {
@@ -61,6 +64,21 @@ const RegisteredUsersTable = () => {
 				<TableCell className="text-center font-medium">{registration.user.firstName}</TableCell>
 				<TableCell className="text-center font-medium">{registration.user.lastName}</TableCell>
 				<TableCell className="text-center font-medium">{registration.user.email}</TableCell>
+				<TableCell className="flex items-center justify-center">
+					{registration.status === "PENDING" && (
+						<ConfirmModal
+							/* @ts-ignore */
+							type="active"
+							name="User Modal"
+							title={"confirmer la présence"}
+							description={"Êtes-vous sûr de vouloir confirmer la présence de cet utilisateur ?"}
+							handleConfirm={() =>
+								handleEditEventRegistration(registration.id, { status: "CONFIRMED" })
+							}
+							isLoading={isLoading}
+						/>
+					)}
+				</TableCell>
 			</TableRow>
 		);
 	});
@@ -69,7 +87,7 @@ const RegisteredUsersTable = () => {
 		<>
 			<CustomTable
 				headers={headers}
-				hideActions={true}
+				hideActions={false}
 				data={
 					getRegistrationsQuery.isLoading ? (
 						<TableRow>

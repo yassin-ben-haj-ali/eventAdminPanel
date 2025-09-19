@@ -9,7 +9,9 @@ const EventsList = () => {
 	const { ref, inView } = useInView({
 		threshold: 0,
 	});
-	const getEventsQuery = useGetEvents(undefined, {
+	const user = useStore((state) => state.myUser.authenticationResult);
+	const userId = user?.role === "ADMIN" ? user.id : undefined;
+	const getEventsQuery = useGetEvents(undefined, userId, {
 		enabled: true,
 	});
 	const events = useStore((state) => state.event.events);

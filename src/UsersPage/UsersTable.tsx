@@ -6,6 +6,8 @@ import useGetUsers from "./hooks/useGetUsers";
 import { useEffect } from "react";
 import Loader from "@/components/ui/Loader/Loader";
 import { useStore } from "@/store/store";
+import ConfirmModal from "@/layouts/ConfirmModal";
+import useDeleteUser from "./hooks/useDeleteUser";
 const headers = [
 	{
 		optionName: "see",
@@ -52,6 +54,7 @@ const UsersTable = () => {
 	const getUsersQuery = useGetUsers({
 		enabled: true,
 	});
+	const { handleDeleteUser, isPending } = useDeleteUser();
 	const users = useStore((state) => state.user.users);
 	useEffect(() => {
 		if (inView && getUsersQuery.hasNextPage) {
@@ -70,6 +73,17 @@ const UsersTable = () => {
 				<TableCell className="text-center font-medium">
 					{user.role === "USER" ? "Employée" : "Organisateur"}
 				</TableCell>
+				<TableCell className="flex items-center justify-center">
+					<ConfirmModal
+						type="delete"
+						title={"Supprimer l'utilisateur"}
+						description={
+							"Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible."
+						}
+						handleConfirm={() => handleDeleteUser(user.id)}
+						isLoading={isPending}
+					/>
+				</TableCell>
 			</TableRow>
 		);
 	});
@@ -78,7 +92,7 @@ const UsersTable = () => {
 		<>
 			<CustomTable
 				headers={headers}
-				hideActions={true}
+				hideActions={false}
 				data={
 					getUsersQuery.isLoading ? (
 						<TableRow>

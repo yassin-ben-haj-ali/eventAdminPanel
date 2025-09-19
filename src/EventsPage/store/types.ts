@@ -5,6 +5,7 @@ export type Event = {
 	date: string;
 	location: string;
 	status: string;
+	userId: string;
 };
 
 export type EventToUpdate = {
@@ -13,6 +14,7 @@ export type EventToUpdate = {
 	description: string;
 	date: Date;
 	location: string;
+	userId: string;
 	status?: string;
 	onClick?: () => void;
 };

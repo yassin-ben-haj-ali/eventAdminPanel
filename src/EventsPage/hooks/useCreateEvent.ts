@@ -9,6 +9,7 @@ export type EventPayload = {
 	description: string;
 	location: string;
 	date: Date;
+	userId: string;
 };
 
 const createEvent = async (payload: EventPayload, axiosPrivate: AxiosInstance): Promise<Event> => {

@@ -8,7 +8,7 @@ import Loader from "@/components/ui/Loader/Loader";
 const EventsDetailsPage = () => {
 	const params = useParams();
 	const eventId = params.id;
-	const eventDetails = useGetEvents(eventId, { enabled: !!eventId });
+	const eventDetails = useGetEvents(eventId, undefined, { enabled: !!eventId });
 
 	if (eventDetails.isLoading) {
 		return (

@@ -17,7 +17,8 @@ const getEvents = async (
 	filters: TableFilter[],
 	searchFilter: string,
 	axiosPrivate: AxiosInstance,
-	eventId?: string
+	eventId?: string,
+	userId?: string
 ): Promise<EventsResponse> => {
 	let where = filters
 		.filter((filter) => {
@@ -51,6 +52,9 @@ const getEvents = async (
 	if (eventId) {
 		where = `where[id]=${eventId}` + (where ? `&${where}` : "");
 	}
+	if (userId) {
+		where = `where[userId]=${userId}` + (where ? `&${where}` : "");
+	}
 	const searchQuery = searchFilter
 		? `&where[OR][0][name][contains]=${encodeURIComponent(searchFilter)}&where[OR][0][name][mode]=insensitive` +
 			`&where[OR][1][description][contains]=${encodeURIComponent(searchFilter)}&where[OR][1][description][mode]=insensitive` +
@@ -63,6 +67,7 @@ const getEvents = async (
 };
 const useGetEvents = (
 	eventId?: string,
+	userId?: string,
 	options?: { filters?: TableFilter[]; enabled: boolean }
 ) => {
 	const filters = useStore((state) => state.user.tableFilters).event;
@@ -71,9 +76,9 @@ const useGetEvents = (
 	const searchFilter = useStore((state) => state.event.searchFilter);
 	const axiosPrivate = useAxiosPrivate();
 	const eventsQuery = useInfiniteQuery({
-		queryKey: ["events", mergedFilters, searchFilter, axiosPrivate, eventId],
+		queryKey: ["events", mergedFilters, searchFilter, axiosPrivate, eventId, userId],
 		queryFn: ({ pageParam = 0 }) => {
-			return getEvents(pageParam, mergedFilters, searchFilter, axiosPrivate, eventId);
+			return getEvents(pageParam, mergedFilters, searchFilter, axiosPrivate, eventId, userId);
 		},
 		enabled: options?.enabled,
 		initialPageParam: 0,

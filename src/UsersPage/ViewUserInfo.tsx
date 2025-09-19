@@ -40,7 +40,13 @@ const ViewUserInfo = ({ data }: Props) => {
 					</DialogTitle>
 				</DialogHeader>
 				<div className="space-y-3">
-					<CustomInput label={"role"} placeholder={"role"} required disabled value={data?.role} />
+					<CustomInput
+						label={"role"}
+						placeholder={"role"}
+						required
+						disabled
+						value={data?.role == "USER" ? "Employé" : "Organisateur"}
+					/>
 					<CustomInput
 						label={"email"}
 						placeholder={"email"}

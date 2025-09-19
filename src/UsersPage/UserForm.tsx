@@ -14,17 +14,22 @@ import { userSchema, type UserSchemaType } from "./types";
 import CustomInput from "@/components/ui/CustomInput";
 import useCreateUser from "./hooks/useCreateUser";
 import { useEffect, useState } from "react";
+import CustomSelect from "@/components/ui/CustomSelect";
 
 type UserFormProps = {
 	id?: string;
 	editMode: boolean;
 };
+const roleOptions = [
+	{ label: "Employé", value: "USER" },
+	{ label: "Organisateur", value: "ADMIN" },
+];
 const UserForm: React.FC<UserFormProps> = ({ editMode }) => {
 	const form = useForm({
 		resolver: zodResolver(userSchema),
 	});
 	const [isOpen, setIsOpen] = useState(false);
-	const { handleSubmit, register, formState, reset } = form;
+	const { handleSubmit, register, formState, reset, setValue, watch } = form;
 	const { errors } = formState;
 	const { handleCreateUser } = useCreateUser();
 
@@ -39,7 +44,7 @@ const UserForm: React.FC<UserFormProps> = ({ editMode }) => {
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger>
-				{editMode ? <Button>Edit User</Button> : <Button>Add User</Button>}
+				{editMode ? <Button>Edit User</Button> : <Button>Ajouter un Utilisateur</Button>}
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader className="space-y-6">
@@ -65,6 +70,17 @@ const UserForm: React.FC<UserFormProps> = ({ editMode }) => {
 								required
 							/>
 						</div>
+						<CustomSelect
+							options={roleOptions}
+							setValue={(role) => {
+								setValue("role", role);
+							}}
+							value={watch("role")}
+							label="rôle"
+							placeholder="choisir un rôle"
+							required
+							error={errors?.role?.message}
+						/>
 						<CustomInput
 							label="Email"
 							placeholder="Entrez votre email"

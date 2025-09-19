@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { EventSchema, type EventSchemaType } from "./types";
 import CustomInput from "@/components/ui/CustomInput";
 import { DateTimePicker } from "@/components/ui/DateTime";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import useCreateEvent from "./hooks/useCreateEvent";
@@ -21,6 +21,9 @@ import type { EventToUpdate } from "./store/types";
 import Loader from "@/components/ui/Loader/Loader";
 import EditIcon from "@/assets/EditIcon";
 import useEditEvent from "./hooks/useEditEvent";
+import { useStore } from "@/store/store";
+import CustomSelect from "@/components/ui/CustomSelect";
+import useGetUsers from "@/UsersPage/hooks/useGetUsers";
 
 type EventFormProps = {
 	editMode: boolean;
@@ -31,6 +34,7 @@ const EventForm: React.FC<EventFormProps> = ({ editMode, eventData }) => {
 	const form = useForm({
 		resolver: zodResolver(EventSchema),
 	});
+	const user = useStore((state) => state.myUser.authenticationResult);
 	const [date, setDate] = useState<Date | undefined>(undefined);
 	const [time, setTime] = useState<string>("");
 	const [dateError, setDateError] = useState<string>("");
@@ -38,6 +42,31 @@ const EventForm: React.FC<EventFormProps> = ({ editMode, eventData }) => {
 	const { errors } = formState;
 	const { isLoading, handleCreateEvent } = useCreateEvent();
 	const { isLoading: isEditLoading, handleEditEvent } = useEditEvent();
+	const [selectedUser, setSelectedUser] = useState<string>("");
+	const usersQuery = useGetUsers({ enabled: isOpen && user?.role === "SUPER_ADMIN" });
+
+	const handleFetchNextPage = () => {
+		if (usersQuery.hasNextPage) {
+			usersQuery.fetchNextPage();
+		}
+	};
+	const usersOptions = useMemo(() => {
+		if (!usersQuery.data) return [];
+		return usersQuery.data.pages.flatMap((page) =>
+			page.paginatedResult
+				.filter((user) => {
+					if (user.role === "USER" || user.role === "SUPER_ADMIN") {
+						return false;
+					}
+					return true;
+				})
+				.map((user) => ({
+					label: `${user.firstName} ${user.lastName}`,
+					value: user.id,
+				}))
+		);
+	}, [usersQuery.data]);
+
 	useEffect(() => {
 		if (eventData) {
 			reset({
@@ -45,6 +74,7 @@ const EventForm: React.FC<EventFormProps> = ({ editMode, eventData }) => {
 				location: eventData.location,
 				description: eventData.description || "",
 			});
+			setSelectedUser(eventData.userId);
 			if (eventData.date) {
 				setDate(new Date(eventData.date));
 				const hours = new Date(eventData.date).getHours().toString().padStart(2, "0");
@@ -89,11 +119,20 @@ const EventForm: React.FC<EventFormProps> = ({ editMode, eventData }) => {
 			dateTime = new Date(date);
 			dateTime.setHours(hours, minutes, 0, 0);
 		}
-		if (dateTime) {
+		if (dateTime && user?.id) {
 			if (editMode && eventData) {
-				await handleEditEvent(eventData.id, { ...data, date: dateTime, id: eventData.id });
+				await handleEditEvent(eventData.id, {
+					...data,
+					date: dateTime,
+					id: eventData.id,
+					userId: user.role !== "ADMIN" ? selectedUser : user.id,
+				});
 			} else {
-				await handleCreateEvent({ ...data, date: dateTime });
+				await handleCreateEvent({
+					...data,
+					date: dateTime,
+					userId: user.role !== "ADMIN" ? selectedUser : user.id,
+				});
 			}
 		}
 		setIsOpen(false);
@@ -110,13 +149,13 @@ const EventForm: React.FC<EventFormProps> = ({ editMode, eventData }) => {
 					</button>
 				) : (
 					<Button type="button" className="px-[47px]" onClick={() => setIsOpen(true)}>
-						Add event
+						Ajouter un Événement
 					</Button>
 				)}
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader className="space-y-6">
-					<DialogTitle>Ajouter un événement</DialogTitle>
+					<DialogTitle>{editMode ? "Modifier l'événement" : "Ajouter un événement"}</DialogTitle>
 				</DialogHeader>
 				<form
 					className="space-y-6"
@@ -125,6 +164,19 @@ const EventForm: React.FC<EventFormProps> = ({ editMode, eventData }) => {
 						handleSubmit(onSubmit)(e);
 					}}
 				>
+					{user?.role === "SUPER_ADMIN" && (
+						<CustomSelect
+							options={usersOptions}
+							setValue={(user) => {
+								setSelectedUser(user);
+							}}
+							value={selectedUser}
+							label="utilisateur"
+							placeholder="choisir un utilisateur"
+							required={user?.role === "SUPER_ADMIN"}
+							reachBottom={handleFetchNextPage}
+						/>
+					)}
 					<CustomInput
 						label="title"
 						placeholder="entrer le titre d'événement"

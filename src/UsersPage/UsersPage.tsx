@@ -12,7 +12,7 @@ const UsersPage = () => {
 				<div className="flex items-center justify-end gap-4">
 					<CustomInput
 						onChange={(e) => searchFilter(e.target.value)}
-						placeholder="Rechercher un organisateur"
+						placeholder="Rechercher un utilisateur"
 					/>
 					<UserForm editMode={false} />
 				</div>

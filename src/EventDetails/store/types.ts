@@ -7,6 +7,16 @@ export type Registration = {
 	user: User;
 	event: Event;
 	id: string;
+	status: string;
+};
+export type EventRegistrationToUpdate = {
+	userId?: string;
+	eventId?: string;
+	user?: User;
+	event?: Event;
+	id?: string;
+	status?: string;
+	onClick?: () => void;
 };
 
 export type RegistrationSlice = {
